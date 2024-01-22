@@ -15,6 +15,7 @@ const String _kMenuTypeCheckbox = 'checkbox';
 const String _kMenuTypeSubMenu = 'submenu';
 const String _kMenuTypeSeparator = 'separator';
 const String _kLabelKey = 'label';
+const String _kSubLabelKey = 'sub_label';
 const String _kImageKey = 'image';
 const String _kSubMenuKey = 'submenu';
 const String _kEnabledKey = 'enabled';
@@ -33,17 +34,19 @@ abstract class MenuItemBase {
     this.enabled,
     this.checked,
     this.onClicked,
+    this.subLabel,
   );
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{};
   }
 
-  Future<void> setLabel(String label) async {
+  Future<void> setLabel(String label, {String? subLabel}) async {
     bool result = await channel?.invokeMethod(_kSetLabel, {
       _kMenuIdKey: menuId ?? -1,
       _kMenuItemIdKey: menuItemId ?? -1,
       _kLabelKey: label,
+      _kSubLabelKey: subLabel,
     });
     if (result) {
       this.label = label;
@@ -97,6 +100,7 @@ abstract class MenuItemBase {
 
   final String type;
   String label;
+  String? subLabel;
   String? image;
   String? name;
 
@@ -118,7 +122,8 @@ class MenuItemLabel extends MenuItemBase {
     String? name,
     bool enabled = true,
     MenuItemSelectedCallback? onClicked,
-  }) : super(_kMenuTypeLabel, label, image, name, enabled, false, onClicked);
+    String? subLabel,
+  }) : super(_kMenuTypeLabel, label, image, name, enabled, false, onClicked, subLabel);
 
   @override
   Map<String, dynamic> toJson() {
@@ -128,6 +133,7 @@ class MenuItemLabel extends MenuItemBase {
       _kLabelKey: label,
       _kImageKey: imageAbsolutePath,
       _kEnabledKey: enabled,
+      _kSubLabelKey: subLabel,
     };
   }
 }
@@ -141,8 +147,8 @@ class MenuItemCheckbox extends MenuItemBase {
     bool enabled = true,
     bool checked = false,
     MenuItemSelectedCallback? onClicked,
-  }) : super(_kMenuTypeCheckbox, label, image, name, enabled, checked,
-            onClicked);
+    String? subLabel,
+  }) : super(_kMenuTypeCheckbox, label, image, name, enabled, checked, onClicked, subLabel);
 
   @override
   Map<String, dynamic> toJson() {
@@ -153,6 +159,7 @@ class MenuItemCheckbox extends MenuItemBase {
       _kImageKey: imageAbsolutePath,
       _kEnabledKey: enabled,
       _kCheckedKey: checked,
+      _kSubLabelKey: subLabel,
     };
   }
 }
@@ -162,8 +169,8 @@ class MenuItemCheckbox extends MenuItemBase {
 /// The item itself can't be selected, it just displays the submenu.
 class SubMenu extends MenuItemBase {
   /// Creates a new submenu with the given [label] and [children].
-  SubMenu({required String label, required this.children, String? image})
-      : super(_kMenuTypeSubMenu, label, image, null, true, false, null);
+  SubMenu({required String label, required this.children, String? image, String? subLabel})
+      : super(_kMenuTypeSubMenu, label, image, null, true, false, null, subLabel);
 
   @override
   Map<String, dynamic> toJson() {
@@ -174,6 +181,7 @@ class SubMenu extends MenuItemBase {
       _kImageKey: imageAbsolutePath,
       _kEnabledKey: enabled,
       _kSubMenuKey: children.map((e) => e.toJson()).toList(),
+      _kSubLabelKey: subLabel,
     };
   }
 
@@ -184,8 +192,7 @@ class SubMenu extends MenuItemBase {
 /// A menu item that serves as a separator, generally drawn as a line.
 class MenuSeparator extends MenuItemBase {
   /// Creates a new separator item.
-  MenuSeparator()
-      : super(_kMenuTypeSeparator, '', null, null, true, false, null);
+  MenuSeparator() : super(_kMenuTypeSeparator, '', null, null, true, false, null, null);
 
   @override
   Map<String, dynamic> toJson() {

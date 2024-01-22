@@ -22,6 +22,7 @@ const String _kTitleKey = "title";
 const String _kIconPathKey = "iconpath";
 const String _kToolTipKey = "tooltip";
 const String _kIsTemplateKey = "is_template";
+const String _kTrayWidthKey = "tray_width";
 
 /// A callback provided to [SystemTray] to handle system tray click event.
 typedef SystemTrayEventCallback = void Function(String eventName);
@@ -38,12 +39,8 @@ class SystemTray {
   SystemTrayEventCallback? _systemTrayEventCallback;
 
   /// Show a SystemTray icon
-  Future<bool> initSystemTray({
-    required String iconPath,
-    String? title,
-    String? toolTip,
-    bool isTemplate = false,
-  }) async {
+  Future<bool> initSystemTray(
+      {required String iconPath, String? title, String? toolTip, bool isTemplate = false, double? width}) async {
     bool value = await _platformChannel.invokeMethod(
       _kInitSystemTray,
       <String, dynamic>{
@@ -52,6 +49,7 @@ class SystemTray {
         _kIconPathKey: await Utils.getIcon(iconPath),
         _kToolTipKey: toolTip,
         _kIsTemplateKey: isTemplate,
+        _kTrayWidthKey: width
       },
     );
     return value;

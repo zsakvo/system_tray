@@ -66,8 +66,8 @@ class _MyAppState extends State<MyApp> {
     List<String> iconList = ['darts_icon', 'gift_icon'];
 
     // We first init the systray menu and then add the menu entries
-    await _systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'));
-    _systemTray.setTitle("system tray");
+    await _systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'), width: 400);
+    _systemTray.setTitle("system trayX\ndfff");
     _systemTray.setToolTip("How to use system tray with Flutter");
 
     // handle system tray event
@@ -93,14 +93,8 @@ class _MyAppState extends State<MyApp> {
           },
         ),
         MenuSeparator(),
-        MenuItemLabel(
-            label: 'Show',
-            image: getImagePath('darts_icon'),
-            onClicked: (menuItem) => _appWindow.show()),
-        MenuItemLabel(
-            label: 'Hide',
-            image: getImagePath('darts_icon'),
-            onClicked: (menuItem) => _appWindow.hide()),
+        MenuItemLabel(label: 'Show', image: getImagePath('darts_icon'), onClicked: (menuItem) => _appWindow.show()),
+        MenuItemLabel(label: 'Hide', image: getImagePath('darts_icon'), onClicked: (menuItem) => _appWindow.hide()),
         MenuItemLabel(
           label: 'Start flash tray icon',
           image: getImagePath('darts_icon'),
@@ -111,8 +105,7 @@ class _MyAppState extends State<MyApp> {
               const Duration(milliseconds: 500),
               (timer) {
                 _toogleTrayIcon = !_toogleTrayIcon;
-                _systemTray.setImage(
-                    _toogleTrayIcon ? "" : getTrayImagePath('app_icon'));
+                _systemTray.setImage(_toogleTrayIcon ? "" : getTrayImagePath('app_icon'));
               },
             );
           },
@@ -131,7 +124,8 @@ class _MyAppState extends State<MyApp> {
         ),
         MenuSeparator(),
         SubMenu(
-          label: "Test API",
+          label: "Test APIX",
+          subLabel: "Test API Sub",
           image: getImagePath('gift_icon'),
           children: [
             SubMenu(
@@ -151,8 +145,7 @@ class _MyAppState extends State<MyApp> {
                   label: 'setImage',
                   image: getImagePath('gift_icon'),
                   onClicked: (menuItem) {
-                    String iconName =
-                        iconList[Random().nextInt(iconList.length)];
+                    String iconName = iconList[Random().nextInt(iconList.length)];
                     String path = getTrayImagePath(iconName);
                     debugPrint("click 'setImage' : $path");
                     _systemTray.setImage(path);
@@ -178,10 +171,7 @@ class _MyAppState extends State<MyApp> {
               ],
             ),
             MenuItemLabel(
-                label: 'disabled Item',
-                name: 'disableItem',
-                image: getImagePath('gift_icon'),
-                enabled: false),
+                label: 'disabled Item', name: 'disableItem', image: getImagePath('gift_icon'), enabled: false),
           ],
         ),
         MenuSeparator(),
@@ -205,12 +195,10 @@ class _MyAppState extends State<MyApp> {
           onClicked: (menuItem) async {
             debugPrint("click 'Checkbox 1'");
 
-            MenuItemCheckbox? checkbox1 =
-                _menuMain.findItemByName<MenuItemCheckbox>("checkbox1");
+            MenuItemCheckbox? checkbox1 = _menuMain.findItemByName<MenuItemCheckbox>("checkbox1");
             await checkbox1?.setCheck(!checkbox1.checked);
 
-            MenuItemCheckbox? checkbox2 =
-                _menuMain.findItemByName<MenuItemCheckbox>("checkbox2");
+            MenuItemCheckbox? checkbox2 = _menuMain.findItemByName<MenuItemCheckbox>("checkbox2");
             await checkbox2?.setEnable(checkbox1?.checked ?? true);
 
             debugPrint(
@@ -242,8 +230,7 @@ class _MyAppState extends State<MyApp> {
           },
         ),
         MenuSeparator(),
-        MenuItemLabel(
-            label: 'Exit', onClicked: (menuItem) => _appWindow.close()),
+        MenuItemLabel(label: 'Exit', onClicked: (menuItem) => _appWindow.close()),
       ],
     );
 
@@ -259,14 +246,8 @@ class _MyAppState extends State<MyApp> {
         },
       ),
       MenuSeparator(),
-      MenuItemLabel(
-          label: 'Show',
-          image: getImagePath('app_icon'),
-          onClicked: (menuItem) => _appWindow.show()),
-      MenuItemLabel(
-          label: 'Hide',
-          image: getImagePath('app_icon'),
-          onClicked: (menuItem) => _appWindow.hide()),
+      MenuItemLabel(label: 'Show', image: getImagePath('app_icon'), onClicked: (menuItem) => _appWindow.show()),
+      MenuItemLabel(label: 'Hide', image: getImagePath('app_icon'), onClicked: (menuItem) => _appWindow.hide()),
       MenuItemLabel(
         label: 'Exit',
         image: getImagePath('app_icon'),
@@ -374,11 +355,9 @@ class ContentBody extends StatelessWidget {
                     ElevatedButton(
                       child: const Text("initSystemTray"),
                       onPressed: () async {
-                        if (await systemTray.initSystemTray(
-                            iconPath: getTrayImagePath('app_icon'))) {
+                        if (await systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'), width: 300)) {
                           systemTray.setTitle("new system tray");
-                          systemTray.setToolTip(
-                              "How to use system tray with Flutter");
+                          systemTray.setToolTip("How to use system tray with Flutter");
                           systemTray.setContextMenu(menu);
                         }
                       },
@@ -458,8 +437,7 @@ class WindowButtons extends StatelessWidget {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: const Text('Exit Program?'),
-                  content: const Text(
-                      ('The window will be hidden, to exit the program you can use the system menu.')),
+                  content: const Text(('The window will be hidden, to exit the program you can use the system menu.')),
                   actions: <Widget>[
                     TextButton(
                       child: const Text('OK'),
