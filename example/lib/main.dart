@@ -139,7 +139,6 @@ class _MyAppState extends State<MyApp> {
                     final String text = WordPair.random().asPascalCase;
                     debugPrint("click 'setTitle' : $text");
                     _systemTray.setTitle(text);
-                    _systemTray.setWidth(400);
                   },
                 ),
                 MenuItemLabel(
@@ -167,6 +166,13 @@ class _MyAppState extends State<MyApp> {
                   onClicked: (menuItem) async {
                     String title = await _systemTray.getTitle();
                     debugPrint("click 'getTitle' : $title");
+                  },
+                ),
+                MenuItemLabel(
+                  label: 'setWidth',
+                  image: getImagePath('darts_icon'),
+                  onClicked: (menuItem) {
+                    _systemTray.setWidth(200.0);
                   },
                 ),
               ],
