@@ -108,19 +108,32 @@ class Tray: NSObject, NSMenuDelegate {
       statusItem?.button?.toolTip = toolTip
     }
 
-    if let title = title {
-      statusItem?.button?.title = title
-    }
+    // if let title = title {
+    //   statusItem?.button?.title = title
+    // }
 
     if let base64Icon = base64Icon {
       if let imageData = Data(base64Encoded: base64Icon, options: .ignoreUnknownCharacters),
         let itemImage = NSImage(data: imageData)
       {
-        let destSize = NSSize(width: kDefaultSizeWidth, height: kDefaultSizeHeight)
-        itemImage.size = destSize
-        itemImage.isTemplate = isTemplate ?? false
-        statusItem?.button?.image = itemImage
-        statusItem?.button?.imagePosition = NSControl.ImagePosition.imageLeft
+        // let destSize = NSSize(width: kDefaultSizeWidth, height: kDefaultSizeHeight)
+        // itemImage.size = destSize
+        // itemImage.isTemplate = isTemplate ?? false
+        // statusItem?.button?.image = itemImage
+        // statusItem?.button?.imagePosition = NSControl.ImagePosition.imageLeft
+
+          // Create a custom view with icon and title
+        let customStatusItemView = CustomStatusItemView(frame: NSRect(x: 0, y: 0, width: 100, height: 22))
+        customStatusItemView.image = itemImage
+                // customStatusItemView.image?.size = NSSize(width: 18, height: 18) // Set the image size
+
+        // customStatusItemView.title = "Your Title"
+        customStatusItemView.upText = "12.26 MB/s"
+        customStatusItemView.downText = "32 KB/s"
+
+        // Set the custom view as the status item's button
+        statusItem?.button?.subviews.forEach { $0.removeFromSuperview() }
+        statusItem?.button?.addSubview(customStatusItemView)
       }
     }
 
@@ -139,9 +152,9 @@ class Tray: NSObject, NSMenuDelegate {
       statusItem?.button?.toolTip = toolTip
     }
 
-    if let title = title {
-      statusItem?.button?.title = title
-    }
+    // if let title = title {
+    //   statusItem?.button?.title = title
+    // }
 
     if let trayWidth = trayWidth {
       statusItem?.length = CGFloat(trayWidth)
@@ -223,4 +236,74 @@ class Tray: NSObject, NSMenuDelegate {
     }
     result(true)
   }
+}
+
+class CustomStatusItemView: NSView {
+    var image: NSImage?
+    // var title: String = ""
+    var upText: String = ""
+    var downText: String = ""
+
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+
+        let yOffset = 2.0
+
+        // Draw the image on the left side
+        if let image = image {
+            let imageSize = NSSize(width: dirtyRect.size.height-4, height: dirtyRect.size.height-4)
+            let imageRect = NSRect(x: 5, y: 2, width: imageSize.width, height: imageSize.height)
+            image.draw(in: imageRect)
+        }
+
+        // Draw the title on the right side
+        // if !title.isEmpty {
+        //     let titleAttributes: [NSAttributedString.Key: Any] = [
+        //         .font: NSFont.systemFont(ofSize: 14),
+        //         .foregroundColor: NSColor.textColor
+        //     ]
+
+        //     let titleSize = (title as NSString).size(withAttributes: titleAttributes)
+        //     let titleRect = NSRect(x: dirtyRect.size.width - titleSize.width - 5, y: (dirtyRect.size.height - titleSize.height) / 2, width: titleSize.width, height: titleSize.height)
+
+        //     (title as NSString).draw(in: titleRect, withAttributes: titleAttributes)
+        // }
+
+        if !upText.isEmpty {
+            let upTextAttributes: [NSAttributedString.Key: Any] = [
+                .font: NSFont.systemFont(ofSize: 9),
+                .foregroundColor: NSColor.textColor,
+                .paragraphStyle: {
+                    let paragraphStyle = NSMutableParagraphStyle()
+                    paragraphStyle.alignment = .right
+                    paragraphStyle.lineHeightMultiple = 1.0
+                    return paragraphStyle
+                }()
+            ]
+
+            let upTextSize = (upText as NSString).size(withAttributes: upTextAttributes)
+            let upTextRect = NSRect(x: dirtyRect.size.width - upTextSize.width - 5, y:  upTextSize.height, width: upTextSize.width, height: upTextSize.height)
+
+            (upText as NSString).draw(in: upTextRect, withAttributes: upTextAttributes)
+        }
+
+        // Draw the downText on the right side, right-aligned
+        if !downText.isEmpty {
+            let downTextAttributes: [NSAttributedString.Key: Any] = [
+                .font: NSFont.systemFont(ofSize: 9),
+                .foregroundColor: NSColor.textColor,
+                .paragraphStyle: {
+                    let paragraphStyle = NSMutableParagraphStyle()
+                    paragraphStyle.alignment = .right
+                    paragraphStyle.lineHeightMultiple = 1.0
+                    return paragraphStyle
+                }()
+            ]
+
+            let downTextSize = (downText as NSString).size(withAttributes: downTextAttributes)
+            let downTextRect = NSRect(x: dirtyRect.size.width - downTextSize.width - 5, y: 1, width: downTextSize.width, height: downTextSize.height)
+
+            (downText as NSString).draw(in: downTextRect, withAttributes: downTextAttributes)
+        }
+    }
 }

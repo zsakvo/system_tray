@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
 
     // We first init the systray menu and then add the menu entries
     await _systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'), width: 400);
-    _systemTray.setTitle("system trayX\ndfff");
+    _systemTray.setTitle("system trayX");
     _systemTray.setToolTip("How to use system tray with Flutter");
 
     // handle system tray event
@@ -84,7 +84,6 @@ class _MyAppState extends State<MyApp> {
       [
         MenuItemLabel(
           label: 'Change Context Menu',
-          subLabel: "Text Sub XXXXX",
           image: getImagePath('darts_icon'),
           onClicked: (menuItem) {
             debugPrint("Change Context Menu");
@@ -126,7 +125,7 @@ class _MyAppState extends State<MyApp> {
         MenuSeparator(),
         SubMenu(
           label: "Test APIX",
-          subLabel: "Test API Sub. Test API Sub.",
+          subLabel: "Test API Sub. Test API Sub.Test API Sub. Test API Sub. Test API Sub.Test API Sub. Test API Sub.",
           image: getImagePath('gift_icon'),
           children: [
             SubMenu(
