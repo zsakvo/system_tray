@@ -15,6 +15,7 @@ private let kTitleKey = "title"
 private let kIconPathKey = "iconpath"
 private let kToolTipKey = "tooltip"
 private let kIsTemplateKey = "is_template"
+private let kTrayWidthKey = "tray_width"
 
 private let kSystemTrayEventClick = "click"
 private let kSystemTrayEventRightClick = "right-click"
@@ -85,13 +86,17 @@ class Tray: NSObject, NSMenuDelegate {
     let base64Icon = arguments[kIconPathKey] as? String
     let toolTip = arguments[kToolTipKey] as? String
     let isTemplate = arguments[kIsTemplateKey] as? Bool
+    let trayWidth = arguments[kTrayWidthKey] as? Float
 
     if statusItem != nil {
       result(false)
       return
     }
 
-    statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    // statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    statusItem = NSStatusBar.system.statusItem(
+      withLength: trayWidth == nil ? NSStatusItem.variableLength : CGFloat(trayWidth!)
+    )
 
     statusItem?.button?.action = #selector(onSystemTrayEventCallback(sender:))
     statusItem?.button?.target = self
@@ -128,6 +133,7 @@ class Tray: NSObject, NSMenuDelegate {
     let base64Icon = arguments[kIconPathKey] as? String
     let toolTip = arguments[kToolTipKey] as? String
     let isTemplate = arguments[kIsTemplateKey] as? Bool
+    let trayWidth = arguments[kTrayWidthKey] as? Float
 
     if let toolTip = toolTip {
       statusItem?.button?.toolTip = toolTip
@@ -135,6 +141,10 @@ class Tray: NSObject, NSMenuDelegate {
 
     if let title = title {
       statusItem?.button?.title = title
+    }
+
+    if let trayWidth = trayWidth {
+      statusItem?.length = CGFloat(trayWidth)
     }
 
     if let base64Icon = base64Icon {

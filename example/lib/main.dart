@@ -139,6 +139,7 @@ class _MyAppState extends State<MyApp> {
                     final String text = WordPair.random().asPascalCase;
                     debugPrint("click 'setTitle' : $text");
                     _systemTray.setTitle(text);
+                    _systemTray.setWidth(400);
                   },
                 ),
                 MenuItemLabel(

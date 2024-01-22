@@ -61,6 +61,7 @@ class SystemTray {
     String? iconPath,
     String? toolTip,
     bool isTemplate = false,
+    double? width,
   }) async {
     bool value = await _platformChannel.invokeMethod(
       _kSetSystemTrayInfo,
@@ -69,6 +70,7 @@ class SystemTray {
         _kIconPathKey: await Utils.getIcon(iconPath),
         _kToolTipKey: toolTip,
         _kIsTemplateKey: isTemplate,
+        _kTrayWidthKey: width
       },
     );
     return value;
@@ -87,6 +89,11 @@ class SystemTray {
   /// (macOS) Sets the title displayed next to the tray icon in the status bar.
   Future<void> setTitle(String title) async {
     await setSystemTrayInfo(title: title);
+  }
+
+  /// (macOS) Sets the title display width in the status bar.
+  Future<void> setWidth(double width) async {
+    await setSystemTrayInfo(width: width);
   }
 
   /// (macOS) Returns string - the title displayed next to the tray icon in the status bar
