@@ -123,17 +123,17 @@ class Tray: NSObject, NSMenuDelegate {
         // statusItem?.button?.imagePosition = NSControl.ImagePosition.imageLeft
 
           // Create a custom view with icon and title
-        let customStatusItemView = CustomStatusItemView(frame: NSRect(x: 0, y: 0, width: 100, height: 22))
-        customStatusItemView.image = itemImage
-                // customStatusItemView.image?.size = NSSize(width: 18, height: 18) // Set the image size
+        let DualStatusItemView = DualStatusItemView(frame: NSRect(x: 0, y: 0, width: CGFloat(trayWidth!), height: 22))
+        DualStatusItemView.image = itemImage
+                // DualStatusItemView.image?.size = NSSize(width: 18, height: 18) // Set the image size
 
-        // customStatusItemView.title = "Your Title"
-        customStatusItemView.upText = "12.26 MB/s"
-        customStatusItemView.downText = "32 KB/s"
+        // DualStatusItemView.title = "Your Title"
+        DualStatusItemView.upText = "12.26 MB/s"
+        DualStatusItemView.downText = "32 KB/s"
 
         // Set the custom view as the status item's button
         statusItem?.button?.subviews.forEach { $0.removeFromSuperview() }
-        statusItem?.button?.addSubview(customStatusItemView)
+        statusItem?.button?.addSubview(DualStatusItemView)
       }
     }
 
@@ -238,7 +238,7 @@ class Tray: NSObject, NSMenuDelegate {
   }
 }
 
-class CustomStatusItemView: NSView {
+class DualStatusItemView: NSView {
     var image: NSImage?
     // var title: String = ""
     var upText: String = ""
