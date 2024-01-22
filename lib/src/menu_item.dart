@@ -20,22 +20,15 @@ const String _kImageKey = 'image';
 const String _kSubMenuKey = 'submenu';
 const String _kEnabledKey = 'enabled';
 const String _kCheckedKey = 'checked';
+const String _kSubLabelMaxLenghtKey = "sub_label_max_length";
 
 /// A callback provided to [MenuItemBase] to handle menu selection.
 typedef MenuItemSelectedCallback = void Function(MenuItemBase);
 
 /// The base type for an individual menu item that can be shown in a menu.
 abstract class MenuItemBase {
-  MenuItemBase(
-    this.type,
-    this.label,
-    this.image,
-    this.name,
-    this.enabled,
-    this.checked,
-    this.onClicked,
-    this.subLabel,
-  );
+  MenuItemBase(this.type, this.label, this.image, this.name, this.enabled, this.checked, this.onClicked, this.subLabel,
+      this.subLabelMaxLength);
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{};
@@ -103,6 +96,7 @@ abstract class MenuItemBase {
   String? subLabel;
   String? image;
   String? name;
+  double? subLabelMaxLength;
 
   /// Whether or not the menu item is enabled.
   bool enabled;
@@ -116,14 +110,15 @@ abstract class MenuItemBase {
 
 /// A standard menu item, with no submenus.
 class MenuItemLabel extends MenuItemBase {
-  MenuItemLabel({
-    required String label,
-    String? image,
-    String? name,
-    bool enabled = true,
-    MenuItemSelectedCallback? onClicked,
-    String? subLabel,
-  }) : super(_kMenuTypeLabel, label, image, name, enabled, false, onClicked, subLabel);
+  MenuItemLabel(
+      {required String label,
+      String? image,
+      String? name,
+      bool enabled = true,
+      MenuItemSelectedCallback? onClicked,
+      String? subLabel,
+      double? subLabelMaxLength})
+      : super(_kMenuTypeLabel, label, image, name, enabled, false, onClicked, subLabel, subLabelMaxLength);
 
   @override
   Map<String, dynamic> toJson() {
@@ -134,21 +129,23 @@ class MenuItemLabel extends MenuItemBase {
       _kImageKey: imageAbsolutePath,
       _kEnabledKey: enabled,
       _kSubLabelKey: subLabel,
+      _kSubLabelMaxLenghtKey: subLabelMaxLength
     };
   }
 }
 
 /// A menu item that serves as a checkbox.
 class MenuItemCheckbox extends MenuItemBase {
-  MenuItemCheckbox({
-    required String label,
-    String? image,
-    String? name,
-    bool enabled = true,
-    bool checked = false,
-    MenuItemSelectedCallback? onClicked,
-    String? subLabel,
-  }) : super(_kMenuTypeCheckbox, label, image, name, enabled, checked, onClicked, subLabel);
+  MenuItemCheckbox(
+      {required String label,
+      String? image,
+      String? name,
+      bool enabled = true,
+      bool checked = false,
+      MenuItemSelectedCallback? onClicked,
+      String? subLabel,
+      double? subLabelMaxLength})
+      : super(_kMenuTypeCheckbox, label, image, name, enabled, checked, onClicked, subLabel, subLabelMaxLength);
 
   @override
   Map<String, dynamic> toJson() {
@@ -160,6 +157,7 @@ class MenuItemCheckbox extends MenuItemBase {
       _kEnabledKey: enabled,
       _kCheckedKey: checked,
       _kSubLabelKey: subLabel,
+      _kSubLabelMaxLenghtKey: subLabelMaxLength
     };
   }
 }
@@ -169,8 +167,8 @@ class MenuItemCheckbox extends MenuItemBase {
 /// The item itself can't be selected, it just displays the submenu.
 class SubMenu extends MenuItemBase {
   /// Creates a new submenu with the given [label] and [children].
-  SubMenu({required String label, required this.children, String? image, String? subLabel})
-      : super(_kMenuTypeSubMenu, label, image, null, true, false, null, subLabel);
+  SubMenu({required String label, required this.children, String? image, String? subLabel, double? subLabelMaxLength})
+      : super(_kMenuTypeSubMenu, label, image, null, true, false, null, subLabel, subLabelMaxLength);
 
   @override
   Map<String, dynamic> toJson() {
@@ -182,6 +180,7 @@ class SubMenu extends MenuItemBase {
       _kEnabledKey: enabled,
       _kSubMenuKey: children.map((e) => e.toJson()).toList(),
       _kSubLabelKey: subLabel,
+      _kSubLabelMaxLenghtKey: subLabelMaxLength
     };
   }
 
@@ -192,7 +191,7 @@ class SubMenu extends MenuItemBase {
 /// A menu item that serves as a separator, generally drawn as a line.
 class MenuSeparator extends MenuItemBase {
   /// Creates a new separator item.
-  MenuSeparator() : super(_kMenuTypeSeparator, '', null, null, true, false, null, null);
+  MenuSeparator() : super(_kMenuTypeSeparator, '', null, null, true, false, null, null, null);
 
   @override
   Map<String, dynamic> toJson() {

@@ -128,6 +128,7 @@ class _MyAppState extends State<MyApp> {
         SubMenu(
           label: "Test APIX",
           subLabel: "Test API Sub. Test API Sub.Test API Sub. Test API Sub. Test API Sub.Test API Sub. Test API Sub.",
+          subLabelMaxLength: 300,
           image: getImagePath('gift_icon'),
           children: [
             SubMenu(
@@ -195,6 +196,8 @@ class _MyAppState extends State<MyApp> {
         MenuSeparator(),
         MenuItemLabel(
           label: 'Set Item Image',
+          subLabel: "Test API Sub. Test API Sub.Test API Sub. Test API Sub. Test API Sub.Test API Sub. Test API Sub.",
+          subLabelMaxLength: 172,
           onClicked: (menuItem) async {
             debugPrint("click 'SetItemImage'");
 

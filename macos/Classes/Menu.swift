@@ -16,6 +16,7 @@ private let kSubLabelKey = "sub_label"
 private let kImageKey = "image"
 private let kEnabledKey = "enabled"
 private let kCheckedKey = "checked"
+private let kSubLabelMaxLenghtKey = "sub_label_max_length"
 
 private let kMenuItemSelectedCallbackMethod = "MenuItemSelectedCallback"
 
@@ -189,15 +190,24 @@ class Menu: NSObject {
         self.nsMenu?.item(withTag: menuItemId, recursive: true)?.state = checked ? .on : .off
     }
     
-    func setAttributedTitle(  menuItem: NSMenuItem, name: String, secondLabel: String?, maxLength: CGFloat = 0) {
+    func setAttributedTitle(menuItem: NSMenuItem, name: String, secondLabel: String?, maxLength: CGFloat = 0,chipLabel:String = "test", chipBackgroundColor:Int = 0xff66ccff,chipLabelColor:Int = 0xffffffff) {
         let paragraph = NSMutableParagraphStyle()
         paragraph.tabStops = [
-            NSTextTab(textAlignment: .right, location: maxLength, options: [:])
+            NSTextTab(textAlignment: .right, location: maxLength + 64, options: [:])
         ]
         let name = name.replacingOccurrences(of: "\t", with: " ")
+        
         let str: String
         if let label = secondLabel {
-            str = "\(name)\t\(label)"
+            var truncatedLabel: String = ""
+            if label.count > 30 {
+                let startIndex = label.index(label.endIndex, offsetBy: -30)
+                let truncatedText = label[startIndex...]
+                truncatedLabel = "...\(truncatedText)"
+            } else {
+                truncatedLabel = label
+            }
+            str = "\(name)\t\(truncatedLabel)"
         } else {
             str = name.appending(" ")
         }
@@ -219,7 +229,7 @@ class Menu: NSObject {
                 NSAttributedString.Key.foregroundColor: NSColor.secondaryLabelColor
             ]
             attributed.addAttributes(delayAttr, range: NSRange(name.utf16.count + 1..<str.utf16.count))
-        }
+        } 
         menuItem.attributedTitle = attributed
     }
     
@@ -241,6 +251,7 @@ class Menu: NSObject {
         let label = item[kLabelKey] as? String ?? ""
         let subLabel:String? = item[kSubLabelKey] as? String
         let id = item[kIdKey] as? Int ?? -1
+        let maxLength = item[kSubLabelMaxLenghtKey] as? Double ?? 0
         
         var image: NSImage?
         if let base64Icon = item[kImageKey] as? String {
@@ -266,14 +277,14 @@ class Menu: NSObject {
                 menuItem.image = image
                 menuItem.submenu = subMenu
                 menu.addItem(menuItem)
-                setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
+                setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: CGFloat(maxLength))
             }
         case kCheckboxKey:
             let isChecked = item[kCheckedKey] as? Bool ?? false
             
             let menuItem = NSMenuItem()
             // menuItem.title = label
-            setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
+            setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: CGFloat(maxLength))
             menuItem.image = image
             menuItem.target = self
             menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
@@ -283,7 +294,7 @@ class Menu: NSObject {
         default:
             let menuItem = NSMenuItem()
             // menuItem.title = label
-            setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
+            setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: CGFloat(maxLength))
             menuItem.image = image
             menuItem.target = self
             menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
@@ -300,5 +311,62 @@ class Menu: NSObject {
             kMenuItemSelectedCallbackMethod,
             arguments: [kMenuIdKey: menuId, kMenuItemIdKey: menuItem.tag],
             result: nil)
+    }
+}
+
+extension CGColor {
+    static func fromHexInt(_ hexInt: UInt32) -> CGColor? {
+        let red = CGFloat((hexInt & 0xFF000000) >> 24) / 255.0
+        let green = CGFloat((hexInt & 0x00FF0000) >> 16) / 255.0
+        let blue = CGFloat((hexInt & 0x0000FF00) >> 8) / 255.0
+        let alpha = CGFloat(hexInt & 0x000000FF) / 255.0
+        
+        let color = NSColor(red: red, green: green, blue: blue, alpha: alpha)
+        return color.cgColor
+    }
+}
+
+extension NSColor {
+    convenience init?(hex: UInt32) {
+        let red = CGFloat((hex & 0xFF000000) >> 24) / 255.0
+        let green = CGFloat((hex & 0x00FF0000) >> 16) / 255.0
+        let blue = CGFloat((hex & 0x0000FF00) >> 8) / 255.0
+        let alpha = CGFloat(hex & 0x000000FF) / 255.0
+        
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+}
+
+
+class ChipView: NSView {
+    var delay: String = "" {
+        didSet {
+            // 触发视图重新绘制
+            needsDisplay = true
+        }
+    }
+    
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        
+        // 绘制背景色
+        NSColor.blue.setFill()
+        dirtyRect.fill()
+        
+        // 绘制文字
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 12),
+            .foregroundColor: NSColor.white
+        ]
+        
+        let textSize = delay.size(withAttributes: attributes)
+        let textRect = NSRect(
+            x: bounds.midX - textSize.width / 2,
+            y: bounds.midY - textSize.height / 2,
+            width: min(textSize.width, bounds.width),
+            height: min(textSize.height, bounds.height)
+        )
+        
+        delay.draw(in: textRect, withAttributes: attributes)
     }
 }
