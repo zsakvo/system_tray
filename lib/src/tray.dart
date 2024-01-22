@@ -23,6 +23,9 @@ const String _kIconPathKey = "iconpath";
 const String _kToolTipKey = "tooltip";
 const String _kIsTemplateKey = "is_template";
 const String _kTrayWidthKey = "tray_width";
+const String _kIsDualKey = "is_dual";
+const String _kUpTextKey = "up_text";
+const String _kDownTextKey = "down_text";
 
 /// A callback provided to [SystemTray] to handle system tray click event.
 typedef SystemTrayEventCallback = void Function(String eventName);
@@ -40,7 +43,14 @@ class SystemTray {
 
   /// Show a SystemTray icon
   Future<bool> initSystemTray(
-      {required String iconPath, String? title, String? toolTip, bool isTemplate = false, double? width}) async {
+      {required String iconPath,
+      String? title,
+      String? toolTip,
+      bool isTemplate = false,
+      double? width,
+      bool? isDual,
+      String? upText,
+      String? downText}) async {
     bool value = await _platformChannel.invokeMethod(
       _kInitSystemTray,
       <String, dynamic>{
@@ -49,20 +59,25 @@ class SystemTray {
         _kIconPathKey: await Utils.getIcon(iconPath),
         _kToolTipKey: toolTip,
         _kIsTemplateKey: isTemplate,
-        _kTrayWidthKey: width
+        _kTrayWidthKey: width,
+        _kIsDualKey: isDual,
+        _kUpTextKey: upText,
+        _kDownTextKey: downText
       },
     );
     return value;
   }
 
   /// Set system info info
-  Future<bool> setSystemTrayInfo({
-    String? title,
-    String? iconPath,
-    String? toolTip,
-    bool isTemplate = false,
-    double? width,
-  }) async {
+  Future<bool> setSystemTrayInfo(
+      {String? title,
+      String? iconPath,
+      String? toolTip,
+      bool isTemplate = false,
+      double? width,
+      bool? isDual,
+      String? upText,
+      String? downText}) async {
     bool value = await _platformChannel.invokeMethod(
       _kSetSystemTrayInfo,
       <String, dynamic>{
@@ -70,7 +85,10 @@ class SystemTray {
         _kIconPathKey: await Utils.getIcon(iconPath),
         _kToolTipKey: toolTip,
         _kIsTemplateKey: isTemplate,
-        _kTrayWidthKey: width
+        _kTrayWidthKey: width,
+        _kIsDualKey: isDual,
+        _kUpTextKey: upText,
+        _kDownTextKey: downText
       },
     );
     return value;
@@ -89,6 +107,12 @@ class SystemTray {
   /// (macOS) Sets the title displayed next to the tray icon in the status bar.
   Future<void> setTitle(String title) async {
     await setSystemTrayInfo(title: title);
+  }
+
+  /// (macOS) Sets the dual title displayed next to the tray icon in the status bar.
+  Future<void> setDualTitle(
+      {String? iconPath, required String upTitle, required String downTitle, double? width}) async {
+    await setSystemTrayInfo(iconPath: iconPath, isDual: true, upText: upTitle, downText: downTitle, width: width);
   }
 
   /// (macOS) Sets the title display width in the status bar.

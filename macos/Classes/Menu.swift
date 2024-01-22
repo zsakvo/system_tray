@@ -21,175 +21,175 @@ private let kMenuItemSelectedCallbackMethod = "MenuItemSelectedCallback"
 
 //https://stackoverflow.com/questions/26044110/searching-nsmenuitem-inside-nsmenu-recursively/70609223#70609223
 extension NSMenu {
-  func item(withTag tag: Int, recursive: Bool) -> NSMenuItem? {
-    if !recursive {
-      return item(withTag: tag)
-    }
-    for item in items {
-      if item.tag == tag {
-        return item
-      } else if item.hasSubmenu {
-        if let result = item.submenu!.item(withTag: tag, recursive: recursive) {
-          return result
+    func item(withTag tag: Int, recursive: Bool) -> NSMenuItem? {
+        if !recursive {
+            return item(withTag: tag)
         }
-      }
+        for item in items {
+            if item.tag == tag {
+                return item
+            } else if item.hasSubmenu {
+                if let result = item.submenu!.item(withTag: tag, recursive: recursive) {
+                    return result
+                }
+            }
+        }
+        return nil
     }
-    return nil
-  }
 }
 
 class Menu: NSObject {
-  var channel: FlutterMethodChannel
-  var menuId: Int
-  var nsMenu: NSMenu?
-
-  init(_ channel: FlutterMethodChannel, _ menuId: Int) {
-    self.channel = channel
-    self.menuId = menuId
-  }
-
-  func createContextMenu(_ call: FlutterMethodCall) -> Bool {
-    var result = false
-
-    repeat {
-      let arguments = call.arguments as! [String: Any]
-      let menuList = arguments[kMenuListKey] as? [[String: Any]]
-
-      if menuList == nil {
-        break
-      }
-
-      if !createContextMenu(menuList!) {
-        break
-      }
-
-      result = true
-    } while false
-
-    return result
-  }
-
-  func setLabel(_ call: FlutterMethodCall, _ result: FlutterResult) {
-    repeat {
-      let arguments = call.arguments as! [String: Any]
-      let menuItemId = arguments[kMenuItemIdKey] as? Int
-      let label = arguments[kLabelKey] as? String
-
-      if menuItemId == nil || label == nil {
-        break
-      }
-
-      setLabel(menuItemId: menuItemId!, label: label!)
-
-      result(true)
-      return
-    } while false
-
-    result(false)
-  }
-
-  func setImage(_ call: FlutterMethodCall, _ result: FlutterResult) {
-    repeat {
-      let arguments = call.arguments as! [String: Any]
-      let menuItemId = arguments[kMenuItemIdKey] as? Int
-      let image = arguments[kImageKey] as? String
-
-      if menuItemId == nil {
-        break
-      }
-
-      setImage(menuItemId: menuItemId!, base64Icon: image)
-
-      result(true)
-      return
-    } while false
-
-    result(false)
-  }
-
-  func setEnable(_ call: FlutterMethodCall, _ result: FlutterResult) {
-    repeat {
-      let arguments = call.arguments as! [String: Any]
-      let menuItemId = arguments[kMenuItemIdKey] as? Int
-      let enabled = arguments[kEnabledKey] as? Bool
-
-      if menuItemId == nil || enabled == nil {
-        break
-      }
-
-      setEnable(menuItemId: menuItemId!, enabled: enabled!)
-
-      result(true)
-      return
-    } while false
-
-    result(false)
-  }
-
-  func setCheck(_ call: FlutterMethodCall, _ result: FlutterResult) {
-    repeat {
-      let arguments = call.arguments as! [String: Any]
-      let menuItemId = arguments[kMenuItemIdKey] as? Int
-      let checked = arguments[kCheckedKey] as? Bool
-
-      if menuItemId == nil || checked == nil {
-        break
-      }
-
-      setCheck(menuItemId: menuItemId!, checked: checked!)
-
-      result(true)
-      return
-    } while false
-
-    result(false)
-  }
-
-  func createContextMenu(_ items: [[String: Any]]) -> Bool {
-    repeat {
-      let nsMenu = NSMenu()
-      if !valueToMenu(menu: nsMenu, items: items) {
-        break
-      }
-
-      self.nsMenu = nsMenu
-      return true
-    } while false
-
-    return false
-  }
-
-  func getNSMenu() -> NSMenu? {
-    return nsMenu
-  }
-
-  func setLabel(menuItemId: Int, label: String) {
-    self.nsMenu?.item(withTag: menuItemId, recursive: true)?.title = label
-  }
-
-  func setImage(menuItemId: Int, base64Icon: String?) {
-    var image: NSImage?
-    if let base64Icon = base64Icon {
-      if let imageData = Data(base64Encoded: base64Icon, options: .ignoreUnknownCharacters),
-        let itemImage = NSImage(data: imageData)
-      {
-        itemImage.size = NSSize(width: kDefaultIconSizeWidth, height: kDefaultIconSizeHeight)
-        image = itemImage
-      }
+    var channel: FlutterMethodChannel
+    var menuId: Int
+    var nsMenu: NSMenu?
+    
+    init(_ channel: FlutterMethodChannel, _ menuId: Int) {
+        self.channel = channel
+        self.menuId = menuId
     }
-
-    self.nsMenu?.item(withTag: menuItemId, recursive: true)?.image = image
-  }
-
-  func setEnable(menuItemId: Int, enabled: Bool) {
-    self.nsMenu?.item(withTag: menuItemId, recursive: true)?.isEnabled = enabled
-  }
-
-  func setCheck(menuItemId: Int, checked: Bool) {
-    self.nsMenu?.item(withTag: menuItemId, recursive: true)?.state = checked ? .on : .off
-  }
-
-  func setAttributedTitle(  menuItem: NSMenuItem, name: String, secondLabel: String?, maxLength: CGFloat = 0) {
+    
+    func createContextMenu(_ call: FlutterMethodCall) -> Bool {
+        var result = false
+        
+        repeat {
+            let arguments = call.arguments as! [String: Any]
+            let menuList = arguments[kMenuListKey] as? [[String: Any]]
+            
+            if menuList == nil {
+                break
+            }
+            
+            if !createContextMenu(menuList!) {
+                break
+            }
+            
+            result = true
+        } while false
+        
+        return result
+    }
+    
+    func setLabel(_ call: FlutterMethodCall, _ result: FlutterResult) {
+        repeat {
+            let arguments = call.arguments as! [String: Any]
+            let menuItemId = arguments[kMenuItemIdKey] as? Int
+            let label = arguments[kLabelKey] as? String
+            
+            if menuItemId == nil || label == nil {
+                break
+            }
+            
+            setLabel(menuItemId: menuItemId!, label: label!)
+            
+            result(true)
+            return
+        } while false
+        
+        result(false)
+    }
+    
+    func setImage(_ call: FlutterMethodCall, _ result: FlutterResult) {
+        repeat {
+            let arguments = call.arguments as! [String: Any]
+            let menuItemId = arguments[kMenuItemIdKey] as? Int
+            let image = arguments[kImageKey] as? String
+            
+            if menuItemId == nil {
+                break
+            }
+            
+            setImage(menuItemId: menuItemId!, base64Icon: image)
+            
+            result(true)
+            return
+        } while false
+        
+        result(false)
+    }
+    
+    func setEnable(_ call: FlutterMethodCall, _ result: FlutterResult) {
+        repeat {
+            let arguments = call.arguments as! [String: Any]
+            let menuItemId = arguments[kMenuItemIdKey] as? Int
+            let enabled = arguments[kEnabledKey] as? Bool
+            
+            if menuItemId == nil || enabled == nil {
+                break
+            }
+            
+            setEnable(menuItemId: menuItemId!, enabled: enabled!)
+            
+            result(true)
+            return
+        } while false
+        
+        result(false)
+    }
+    
+    func setCheck(_ call: FlutterMethodCall, _ result: FlutterResult) {
+        repeat {
+            let arguments = call.arguments as! [String: Any]
+            let menuItemId = arguments[kMenuItemIdKey] as? Int
+            let checked = arguments[kCheckedKey] as? Bool
+            
+            if menuItemId == nil || checked == nil {
+                break
+            }
+            
+            setCheck(menuItemId: menuItemId!, checked: checked!)
+            
+            result(true)
+            return
+        } while false
+        
+        result(false)
+    }
+    
+    func createContextMenu(_ items: [[String: Any]]) -> Bool {
+        repeat {
+            let nsMenu = NSMenu()
+            if !valueToMenu(menu: nsMenu, items: items) {
+                break
+            }
+            
+            self.nsMenu = nsMenu
+            return true
+        } while false
+        
+        return false
+    }
+    
+    func getNSMenu() -> NSMenu? {
+        return nsMenu
+    }
+    
+    func setLabel(menuItemId: Int, label: String) {
+        self.nsMenu?.item(withTag: menuItemId, recursive: true)?.title = label
+    }
+    
+    func setImage(menuItemId: Int, base64Icon: String?) {
+        var image: NSImage?
+        if let base64Icon = base64Icon {
+            if let imageData = Data(base64Encoded: base64Icon, options: .ignoreUnknownCharacters),
+               let itemImage = NSImage(data: imageData)
+            {
+                itemImage.size = NSSize(width: kDefaultIconSizeWidth, height: kDefaultIconSizeHeight)
+                image = itemImage
+            }
+        }
+        
+        self.nsMenu?.item(withTag: menuItemId, recursive: true)?.image = image
+    }
+    
+    func setEnable(menuItemId: Int, enabled: Bool) {
+        self.nsMenu?.item(withTag: menuItemId, recursive: true)?.isEnabled = enabled
+    }
+    
+    func setCheck(menuItemId: Int, checked: Bool) {
+        self.nsMenu?.item(withTag: menuItemId, recursive: true)?.state = checked ? .on : .off
+    }
+    
+    func setAttributedTitle(  menuItem: NSMenuItem, name: String, secondLabel: String?, maxLength: CGFloat = 0) {
         let paragraph = NSMutableParagraphStyle()
         paragraph.tabStops = [
             NSTextTab(textAlignment: .right, location: maxLength, options: [:])
@@ -201,7 +201,7 @@ class Menu: NSObject {
         } else {
             str = name.appending(" ")
         }
-
+        
         let attributed = NSMutableAttributedString(
             string: str,
             attributes: [
@@ -209,10 +209,10 @@ class Menu: NSObject {
                 NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 14)
             ]
         )
-
+        
         let hackAttr = [NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 15)]
         attributed.addAttributes(hackAttr, range: NSRange(name.utf16.count..<name.utf16.count + 1))
-
+        
         if secondLabel != nil {
             let delayAttr = [
                 NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular),
@@ -222,83 +222,83 @@ class Menu: NSObject {
         }
         menuItem.attributedTitle = attributed
     }
-
-  func valueToMenu(menu: NSMenu, items: [[String: Any]]) -> Bool {
-    for item in items {
-      if !valueToMenuItem(menu: menu, item: item) {
-        return false
-      }
+    
+    func valueToMenu(menu: NSMenu, items: [[String: Any]]) -> Bool {
+        for item in items {
+            if !valueToMenuItem(menu: menu, item: item) {
+                return false
+            }
+        }
+        return true
     }
-    return true
-  }
-
-  func valueToMenuItem(menu: NSMenu, item: [String: Any]) -> Bool {
-    let type = item[kTypeKey] as? String
-    if type == nil {
-      return false
+    
+    func valueToMenuItem(menu: NSMenu, item: [String: Any]) -> Bool {
+        let type = item[kTypeKey] as? String
+        if type == nil {
+            return false
+        }
+        
+        let label = item[kLabelKey] as? String ?? ""
+        let subLabel:String? = item[kSubLabelKey] as? String
+        let id = item[kIdKey] as? Int ?? -1
+        
+        var image: NSImage?
+        if let base64Icon = item[kImageKey] as? String {
+            if let imageData = Data(base64Encoded: base64Icon, options: .ignoreUnknownCharacters),
+               let itemImage = NSImage(data: imageData)
+            {
+                itemImage.size = NSSize(width: kDefaultIconSizeWidth, height: kDefaultIconSizeHeight)
+                image = itemImage
+            }
+        }
+        
+        let isEnabled = item[kEnabledKey] as? Bool ?? false
+        
+        switch type! {
+        case kSeparatorKey:
+            menu.addItem(.separator())
+        case kSubMenuKey:
+            let subMenu = NSMenu()
+            let children = item[kSubMenuKey] as? [[String: Any]] ?? [[String: Any]]()
+            if valueToMenu(menu: subMenu, items: children) {
+                let menuItem = NSMenuItem()
+                // menuItem.title = label
+                menuItem.image = image
+                menuItem.submenu = subMenu
+                menu.addItem(menuItem)
+                setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
+            }
+        case kCheckboxKey:
+            let isChecked = item[kCheckedKey] as? Bool ?? false
+            
+            let menuItem = NSMenuItem()
+            // menuItem.title = label
+            setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
+            menuItem.image = image
+            menuItem.target = self
+            menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
+            menuItem.tag = id
+            menuItem.state = isChecked ? .on : .off
+            menu.addItem(menuItem)
+        default:
+            let menuItem = NSMenuItem()
+            // menuItem.title = label
+            setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
+            menuItem.image = image
+            menuItem.target = self
+            menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
+            menuItem.tag = id
+            menu.addItem(menuItem)
+        }
+        
+        return true
     }
-
-    let label = item[kLabelKey] as? String ?? ""
-    let subLabel:String? = item[kSubLabelKey] as? String
-    let id = item[kIdKey] as? Int ?? -1
-
-    var image: NSImage?
-    if let base64Icon = item[kImageKey] as? String {
-      if let imageData = Data(base64Encoded: base64Icon, options: .ignoreUnknownCharacters),
-        let itemImage = NSImage(data: imageData)
-      {
-        itemImage.size = NSSize(width: kDefaultIconSizeWidth, height: kDefaultIconSizeHeight)
-        image = itemImage
-      }
+    
+    @objc func onMenuItemSelectedCallback(_ sender: Any) {
+        let menuItem = sender as! NSMenuItem
+        channel.invokeMethod(
+            kMenuItemSelectedCallbackMethod,
+            arguments: [kMenuIdKey: menuId, kMenuItemIdKey: menuItem.tag],
+            result: nil)
     }
-
-    let isEnabled = item[kEnabledKey] as? Bool ?? false
-
-    switch type! {
-    case kSeparatorKey:
-      menu.addItem(.separator())
-    case kSubMenuKey:
-      let subMenu = NSMenu()
-      let children = item[kSubMenuKey] as? [[String: Any]] ?? [[String: Any]]()
-      if valueToMenu(menu: subMenu, items: children) {
-        let menuItem = NSMenuItem()
-        // menuItem.title = label
-        menuItem.image = image
-        menuItem.submenu = subMenu
-        menu.addItem(menuItem)
-        setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
-      }
-    case kCheckboxKey:
-      let isChecked = item[kCheckedKey] as? Bool ?? false
-
-      let menuItem = NSMenuItem()
-      // menuItem.title = label
-      setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
-      menuItem.image = image
-      menuItem.target = self
-      menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
-      menuItem.tag = id
-      menuItem.state = isChecked ? .on : .off
-      menu.addItem(menuItem)
-    default:
-      let menuItem = NSMenuItem()
-      // menuItem.title = label
-      setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
-      menuItem.image = image
-      menuItem.target = self
-      menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
-      menuItem.tag = id
-      menu.addItem(menuItem)
-    }
-
-    return true
-  }
-
-  @objc func onMenuItemSelectedCallback(_ sender: Any) {
-    let menuItem = sender as! NSMenuItem
-    channel.invokeMethod(
-      kMenuItemSelectedCallbackMethod,
-      arguments: [kMenuIdKey: menuId, kMenuItemIdKey: menuItem.tag],
-      result: nil)
-  }
 }

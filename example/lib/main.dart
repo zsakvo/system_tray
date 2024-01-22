@@ -66,7 +66,9 @@ class _MyAppState extends State<MyApp> {
     List<String> iconList = ['darts_icon', 'gift_icon'];
 
     // We first init the systray menu and then add the menu entries
-    await _systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'));
+    await _systemTray.initSystemTray(
+      iconPath: getTrayImagePath('app_icon'),
+    );
     _systemTray.setTitle("system trayX");
     _systemTray.setToolTip("How to use system tray with Flutter");
 
@@ -139,6 +141,15 @@ class _MyAppState extends State<MyApp> {
                     final String text = WordPair.random().asPascalCase;
                     debugPrint("click 'setTitle' : $text");
                     _systemTray.setTitle(text);
+                  },
+                ),
+                MenuItemLabel(
+                  label: 'setDualTitle',
+                  image: getImagePath('darts_icon'),
+                  onClicked: (menuItem) {
+                    final String text1 = WordPair.random().asPascalCase;
+                    final String text2 = WordPair.random().asPascalCase;
+                    _systemTray.setDualTitle(iconPath: getTrayImagePath('app_icon'), upTitle: text1, downTitle: text2);
                   },
                 ),
                 MenuItemLabel(
