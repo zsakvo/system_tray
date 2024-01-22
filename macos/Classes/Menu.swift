@@ -189,6 +189,40 @@ class Menu: NSObject {
     self.nsMenu?.item(withTag: menuItemId, recursive: true)?.state = checked ? .on : .off
   }
 
+  func setAttributedTitle(  menuItem: NSMenuItem, name: String, secondLabel: String?, maxLength: CGFloat = 0) {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.tabStops = [
+            NSTextTab(textAlignment: .right, location: maxLength, options: [:])
+        ]
+        let name = name.replacingOccurrences(of: "\t", with: " ")
+        let str: String
+        if let label = secondLabel {
+            str = "\(name)\t\(label)"
+        } else {
+            str = name.appending(" ")
+        }
+
+        let attributed = NSMutableAttributedString(
+            string: str,
+            attributes: [
+                NSAttributedString.Key.paragraphStyle: paragraph,
+                NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 14)
+            ]
+        )
+
+        let hackAttr = [NSAttributedString.Key.font: NSFont.menuBarFont(ofSize: 15)]
+        attributed.addAttributes(hackAttr, range: NSRange(name.utf16.count..<name.utf16.count + 1))
+
+        if secondLabel != nil {
+            let delayAttr = [
+                NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular),
+                NSAttributedString.Key.foregroundColor: NSColor.secondaryLabelColor
+            ]
+            attributed.addAttributes(delayAttr, range: NSRange(name.utf16.count + 1..<str.utf16.count))
+        }
+        menuItem.attributedTitle = attributed
+    }
+
   func valueToMenu(menu: NSMenu, items: [[String: Any]]) -> Bool {
     for item in items {
       if !valueToMenuItem(menu: menu, item: item) {
@@ -205,6 +239,7 @@ class Menu: NSObject {
     }
 
     let label = item[kLabelKey] as? String ?? ""
+    let subLabel:String? = item[kSubLabelKey] as? String
     let id = item[kIdKey] as? Int ?? -1
 
     var image: NSImage?
@@ -227,16 +262,18 @@ class Menu: NSObject {
       let children = item[kSubMenuKey] as? [[String: Any]] ?? [[String: Any]]()
       if valueToMenu(menu: subMenu, items: children) {
         let menuItem = NSMenuItem()
-        menuItem.title = label
+        // menuItem.title = label
         menuItem.image = image
         menuItem.submenu = subMenu
         menu.addItem(menuItem)
+        setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
       }
     case kCheckboxKey:
       let isChecked = item[kCheckedKey] as? Bool ?? false
 
       let menuItem = NSMenuItem()
-      menuItem.title = label
+      // menuItem.title = label
+      setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
       menuItem.image = image
       menuItem.target = self
       menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil
@@ -245,7 +282,8 @@ class Menu: NSObject {
       menu.addItem(menuItem)
     default:
       let menuItem = NSMenuItem()
-      menuItem.title = label
+      // menuItem.title = label
+      setAttributedTitle(menuItem:menuItem,name: label, secondLabel: subLabel, maxLength: 240)
       menuItem.image = image
       menuItem.target = self
       menuItem.action = isEnabled ? #selector(onMenuItemSelectedCallback) : nil

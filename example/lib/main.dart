@@ -84,6 +84,7 @@ class _MyAppState extends State<MyApp> {
       [
         MenuItemLabel(
           label: 'Change Context Menu',
+          subLabel: "Text Sub XXXXX",
           image: getImagePath('darts_icon'),
           onClicked: (menuItem) {
             debugPrint("Change Context Menu");
@@ -125,7 +126,7 @@ class _MyAppState extends State<MyApp> {
         MenuSeparator(),
         SubMenu(
           label: "Test APIX",
-          subLabel: "Test API Sub",
+          subLabel: "Test API Sub. Test API Sub.",
           image: getImagePath('gift_icon'),
           children: [
             SubMenu(
@@ -362,7 +363,7 @@ class ContentBody extends StatelessWidget {
                     ElevatedButton(
                       child: const Text("initSystemTray"),
                       onPressed: () async {
-                        if (await systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'), width: 300)) {
+                        if (await systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'), width: 200)) {
                           systemTray.setTitle("new system tray");
                           systemTray.setToolTip("How to use system tray with Flutter");
                           systemTray.setContextMenu(menu);
