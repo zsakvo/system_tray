@@ -16,6 +16,9 @@ private let kIconPathKey = "iconpath"
 private let kToolTipKey = "tooltip"
 private let kIsTemplateKey = "is_template"
 private let kTrayWidthKey = "tray_width"
+private let kIsDualKey = "is_dual"
+private let kUpTextKey = "up_text"
+private let kDownTextKey = "down_text"
 
 private let kSystemTrayEventClick = "click"
 private let kSystemTrayEventRightClick = "right-click"
@@ -87,6 +90,13 @@ class Tray: NSObject, NSMenuDelegate {
     let toolTip = arguments[kToolTipKey] as? String
     let isTemplate = arguments[kIsTemplateKey] as? Bool
     let trayWidth = arguments[kTrayWidthKey] as? Float
+    // let isDual = arguments[kIsDualKey] as? Bool ?? false
+    // let upText = arguments[kUpTextKey] as? String
+    // let downText = arguments[kDownTextKey] as? String
+
+    let isDual = true
+    let upText = "12.26 MB/s"
+    let downText = "32 KB /s"
 
     if statusItem != nil {
       result(false)
@@ -94,8 +104,16 @@ class Tray: NSObject, NSMenuDelegate {
     }
 
     // statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    // statusItem = NSStatusBar.system.statusItem(
+    //   withLength: trayWidth == nil ? NSStatusItem.variableLength : CGFloat(trayWidth!)
+    // )
+
+    // 比较获取 upText 和 downText 中的最大字符串长度
+    let maxAutoWidth = CGFloat(max(upText.count  , downText.count ) * 9 + 10)
+
+
     statusItem = NSStatusBar.system.statusItem(
-      withLength: trayWidth == nil ? NSStatusItem.variableLength : CGFloat(trayWidth!)
+      withLength: trayWidth == nil ? isDual ? maxAutoWidth : NSStatusItem.variableLength : CGFloat(trayWidth!)
     )
 
     statusItem?.button?.action = #selector(onSystemTrayEventCallback(sender:))
@@ -123,7 +141,8 @@ class Tray: NSObject, NSMenuDelegate {
         // statusItem?.button?.imagePosition = NSControl.ImagePosition.imageLeft
 
           // Create a custom view with icon and title
-        let DualStatusItemView = DualStatusItemView(frame: NSRect(x: 0, y: 0, width: CGFloat(trayWidth!), height: 22))
+        let DualStatusItemView = DualStatusItemView(frame: NSRect(x: 0, y: 0, width: trayWidth == nil ? maxAutoWidth : CGFloat(trayWidth! )
+         , height: 22))
         DualStatusItemView.image = itemImage
                 // DualStatusItemView.image?.size = NSSize(width: 18, height: 18) // Set the image size
 

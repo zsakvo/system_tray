@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
     List<String> iconList = ['darts_icon', 'gift_icon'];
 
     // We first init the systray menu and then add the menu entries
-    await _systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'), width: 400);
+    await _systemTray.initSystemTray(iconPath: getTrayImagePath('app_icon'));
     _systemTray.setTitle("system trayX");
     _systemTray.setToolTip("How to use system tray with Flutter");
 
