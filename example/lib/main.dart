@@ -154,6 +154,15 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
                 MenuItemLabel(
+                  label: 'setDualTitleText',
+                  image: getImagePath('darts_icon'),
+                  onClicked: (menuItem) {
+                    final String text1 = WordPair.random().asPascalCase;
+                    final String text2 = WordPair.random().asPascalCase;
+                    _systemTray.setDualTitle(upTitle: text1, downTitle: text2);
+                  },
+                ),
+                MenuItemLabel(
                   label: 'setImage',
                   image: getImagePath('gift_icon'),
                   onClicked: (menuItem) {

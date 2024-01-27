@@ -200,8 +200,8 @@ class Menu: NSObject {
         let str: String
         if let label = secondLabel {
             var truncatedLabel: String = ""
-            if label.count > 30 {
-                let startIndex = label.index(label.endIndex, offsetBy: -30)
+            if label.count > 20 {
+                let startIndex = label.index(label.endIndex, offsetBy: -20)
                 let truncatedText = label[startIndex...]
                 truncatedLabel = "...\(truncatedText)"
             } else {
@@ -225,7 +225,7 @@ class Menu: NSObject {
         
         if secondLabel != nil {
             let delayAttr = [
-                NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular),
+                NSAttributedString.Key.font: NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .regular),
                 NSAttributedString.Key.foregroundColor: NSColor.secondaryLabelColor
             ]
             attributed.addAttributes(delayAttr, range: NSRange(name.utf16.count + 1..<str.utf16.count))
